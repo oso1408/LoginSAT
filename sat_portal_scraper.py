@@ -5,7 +5,7 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from CE.config_webdriver import DriverConfig
+#from CE.config_webdriver import DriverConfig
 from CE.fiel_session_manager import SatWebBase
 from CE.verify_cookies import CookiesManager
 from CE.make_an_enquery import PeticionCESelenium
@@ -18,8 +18,8 @@ class SATPortalScraper:
     """Clase scraper portal SAT."""
     def __init__(self):
         self.intentos = 0
-        self.driver = webdriver.Firefox(options=DriverConfig().config_headless())
-        #self.driver = webdriver.Chrome()
+        #self.driver = webdriver.Firefox(options=DriverConfig().config_headless())
+        self.driver = webdriver.Chrome()
         self.credentials = "config.json"
         self.cookies_manager = CookiesManager()
         self.link_sat = SatLinks()
@@ -72,15 +72,13 @@ class SATPortalScraper:
         time.sleep(10)
 
     def _proceed_with_query(self):
-        print("Redirigiendo... \n")
+        print("Espere un momento, Redirigiendo... \n")
         try:
             self.driver.get(self.link_sat.contabilidad_electronica)
             WebDriverWait(self.driver,30).until(EC.presence_of_element_located((By.XPATH,self.arguments_id_login.div_c_acuses)))
             html_data = self.query_by()
             cookies_page = self.driver.get_cookies()
             self.download_acuse_cf = DownloadacknowledgmentsCE(html_data, cookies_page, self.output_path)
-            #self.download_acuse_cf.export_ce_prueba()
-            #self.download_acuse_cf.export_ce()
             print(self.download_acuse_cf.import_ce())
         except Exception as msg_error:
             raise ValueError("Ocurrio un error: ", msg_error)
@@ -94,12 +92,15 @@ class SATPortalScraper:
                     self.intentos = 3
                     CookiesManager().remove_cookies(self.driver, self.rfc)
                     login_fiel = self.sat_web_base.efirma_login()
-                    if login_fiel !='':
-                        CookiesManager().save_cookies(self.driver, login_fiel)
-                        print("se actualizaron las cookies")
-                        self._proceed_with_query()
-                    else:
-                        print("ocurrio un error")
+                    try:
+                        if login_fiel !='':
+                            CookiesManager().save_cookies(self.driver, login_fiel)
+                            print("Cookies actualizadas")
+                            self._proceed_with_query()
+                        else:
+                            print("Ocurrio un error: No se actualizaron las cookies reintente de nuevo.")
+                    except Exception as exc:
+                        raise ValueError("Ocurrio un error: ", exc)
             except Exception:
                 self.driver.delete_all_cookies()
                 print(f"Aun no carga la pagina intento # {self.intentos + 1}")
@@ -130,8 +131,8 @@ class SATPortalScraper:
             else:
                 html_data = self.peticion_selenium.send_query_uuids()
                 return html_data
-        except Exception:
-            raise ValueError
+        except Exception as exq:
+            raise ValueError("Ocurrio un error: ", exq)
 
 # Uso de la clase
 scraper = SATPortalScraper()

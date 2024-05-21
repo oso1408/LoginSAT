@@ -31,43 +31,44 @@ class PeticionCESelenium:
             consulta_content = self.driver.page_source
             return consulta_content
         except Exception as exce:
-            print ("Error", exce)
-            raise
+            raise ValueError("Error: ", exce)
 
     def send_query_date(self):
-
         """Consulta de acuses por fecha."""
-        rdoCriterios = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID,self.arguments_make_query.rbtn_period)))
-        rdoCriterios.click()
+        try:
+            rdoCriterios = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID,self.arguments_make_query.rbtn_period)))
+            rdoCriterios.click()
 
-        ddlAnio = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID,self.arguments_make_query.input_anio)))
-        ddlAnio.send_keys(self.anio_ce)#2015)
+            ddlAnio = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID,self.arguments_make_query.input_anio)))
+            ddlAnio.send_keys(self.anio_ce)#2015)
 
-        ddlMesInicio = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID,self.arguments_make_query.input_initial_month)))
-        ddlMesInicio.send_keys(self.mes_inicial_ce)#'01 - Enero')
+            ddlMesInicio = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID,self.arguments_make_query.input_initial_month)))
+            ddlMesInicio.send_keys(self.mes_inicial_ce)#'01 - Enero')
 
-        ddlMesFin = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID,self.arguments_make_query.input_end_month)))
-        ddlMesFin.send_keys(self.mes_fin_ce)#'03 - Marzo')
+            ddlMesFin = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID,self.arguments_make_query.input_end_month)))
+            ddlMesFin.send_keys(self.mes_fin_ce)#'03 - Marzo')
 
-        ddlMotivo = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID,self.arguments_make_query.input_reason)))
-        ddlMotivo.send_keys(self.motivo_ce)
+            ddlMotivo = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID,self.arguments_make_query.input_reason)))
+            ddlMotivo.send_keys(self.motivo_ce)
 
-        ddlTipoArchivo = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID,self.arguments_make_query.input_type_file)))
-        ddlTipoArchivo.send_keys(self.tipo_de_archivo_ce)#'B - Balanzas de Comprobación')
+            ddlTipoArchivo = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID,self.arguments_make_query.input_type_file)))
+            ddlTipoArchivo.send_keys(self.tipo_de_archivo_ce)#'B - Balanzas de Comprobación')
 
-        ddlEstatus = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID,self.arguments_make_query.input_status)))
-        ddlEstatus.send_keys(self.estatus_ce)#'Recibido')
+            ddlEstatus = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID,self.arguments_make_query.input_status)))
+            ddlEstatus.send_keys(self.estatus_ce)#'Recibido')
 
-        ddlTipoEnvio = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID,self.arguments_make_query.input_type_send)))
+            ddlTipoEnvio = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID,self.arguments_make_query.input_type_send)))
 
-        if ddlTipoEnvio.get_attribute("disabled"):
-            WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID,self.arguments_make_query.btn_search))).click()
-            WebDriverWait(self.driver, 60).until(EC.presence_of_element_located((By.ID,self.arguments_make_query.div_table)))
-            consulta_content = self.driver.page_source
-            return consulta_content
-        else:
-            ddlTipoEnvio.send_keys(self.tipo_envio_ce)#'Todos')
-            WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID,self.arguments_make_query.btn_search))).click()
-            WebDriverWait(self.driver, 60).until(EC.presence_of_element_located((By.ID,self.arguments_make_query.div_table)))
-            consulta_content = self.driver.page_source
-            return consulta_content
+            if ddlTipoEnvio.get_attribute("disabled"):
+                WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID,self.arguments_make_query.btn_search))).click()
+                WebDriverWait(self.driver, 60).until(EC.presence_of_element_located((By.ID,self.arguments_make_query.div_table)))
+                consulta_content = self.driver.page_source
+                return consulta_content
+            else:
+                ddlTipoEnvio.send_keys(self.tipo_envio_ce)#'Todos')
+                WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID,self.arguments_make_query.btn_search))).click()
+                WebDriverWait(self.driver, 60).until(EC.presence_of_element_located((By.ID,self.arguments_make_query.div_table)))
+                consulta_content = self.driver.page_source
+                return consulta_content
+        except Exception as en:
+            ValueError("Error: ", en)

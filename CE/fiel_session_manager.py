@@ -4,11 +4,12 @@ import time
 from pathlib import Path
 #from cryptography import x509
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
+#from selenium.webdriver.support import expected_conditions as EC
+#from selenium.webdriver.support.ui import WebDriverWait
 #from cryptography.hazmat.backends import default_backend
 from CE.search_and_read_credentials import ReadPathCredentials
 from CE.scraping_arguments import ArgumentsLogin
+from CE.verify_error_page import verify_login_susseful
 
 #Checar porque falla la funcion de certificado_der x503
 class SatWebBase:
@@ -21,11 +22,8 @@ class SatWebBase:
 
     def efirma_login(self):
         """valida credenciales."""
-        
         inicio = time.time()
-
         path_ruta_certificado = Path(self.read_path.search_files_path(self._credentials_path, '.cer'))
-        
         path_ruta_key = Path(self.read_path.search_files_path(self._credentials_path, '.key'))
         credential_cer = self.read_path.search_files_path(self._credentials_path, '.cer')
         credential_key = self.read_path.search_files_path(self._credentials_path, '.key')
@@ -62,16 +60,18 @@ class SatWebBase:
 
             self.driver.find_element(By.ID, self.arguments_id_login.btn_enviar).click()
 
-            try:
-                msg_error = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, self.arguments_id_login.div_msg_alert))).text
-                if msg_error:
-                    raise ValueError(msg_error)
-            except Exception:
+            content_page = self.driver.page_source
+            div_error = verify_login_susseful(content_page)
+
+            if div_error:
+                raise ValueError(div_error)
+            else:
                 pass
+
             fin = time.time()
             print(f"Sesión iniciada correctamente {fin - inicio}")
             return True
 
         except ValueError as e:
-            print("Error: Ocurrio un error en el proceso:", e)
-            raise
+            #print("Error. Ocurrio un error en el proceso:", e)
+            raise ValueError("Error. Ocurrio un error en el proceso: ", e)

@@ -59,10 +59,10 @@ class CookiesManager:
             for cookie in cookies:
                 driver.add_cookie(cookie)
             
-            print("-- Cookies cargadas --")
+            print("Cargando Cookies, espere...")
             return True
         else:
-            print('No se encontró el archivo cookies')
+            print('No se encontró el archivo cookies-'+_rfc+'.json')
             return False
         
     @staticmethod
@@ -75,12 +75,12 @@ class CookiesManager:
                 titulo = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, arguments_login.div_acces_manager))).text
                 if titulo == 'Access Manager':
                     intentos = 3
-                    print("cookies válidas, Redirigiendo...")
+                    print("Se inicio sesion anteriormente, redirigiendo...")
                     return True
             except Exception:
                 intentos += 1
                 print(f"No cargo la pagina, intento # {intentos}")
                 if intentos == 3:
-                    print("Las cookies no son válidas, Redirigiendo...")
-                    return False 
+                    print("Cookies vencidas, Redirigiendo...")
+                    return False
                     

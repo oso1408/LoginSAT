@@ -48,9 +48,11 @@ class DownloadacknowledgmentsCE:
     def import_ce(self):
         """Importacion de los documentos."""
         indice = -1
+        count_downloaded_files = 0
+        count_fail_downloaded_files = 0
         folio_list = []
         name_file_list = []
-        msg_download_successful = "Archivos descargados correctamente"
+    
         link_download_xml = self.link_sat.partial_url
         read_cookies = load_cookies_variable(self.cookies)
 
@@ -81,8 +83,13 @@ class DownloadacknowledgmentsCE:
                         with open(self.ruta_save_zip+name_file_list[indice], 'wb') as f:
                             f.write(download_xml_zip.content)
                             print("Archivo descargado exitosamente como:", name_file_list[indice])
+                            count_downloaded_files += 1
                     else:
                         print("Error al descargar el archivo:", name_file_list[indice])
-                return msg_download_successful
+                        count_fail_downloaded_files += 1
+                msg_download_successful = "Archivos descargados: "+count_downloaded_files 
+                msg_download_fail = "Archivos no descargados: "+count_fail_downloaded_files
+                return msg_download_successful, msg_download_fail
         else:
-            print(total_registros.text.strip(),'\n',leyenda_table.text.strip())
+            msg_info = total_registros.text.strip(),'\n',leyenda_table.text.strip()
+            return msg_info
