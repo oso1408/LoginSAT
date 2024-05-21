@@ -5,7 +5,7 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from CE.support_webdriver import DriverConfig
+from CE.config_webdriver import DriverConfig
 from CE.fiel_session_manager import SatWebBase
 from CE.verify_cookies import CookiesManager
 from CE.make_an_enquery import PeticionCESelenium
