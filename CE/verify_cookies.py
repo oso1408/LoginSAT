@@ -4,7 +4,6 @@ import os
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from CE.links_sat import SatLinks
 from CE.scraping_arguments import ArgumentsLogin
 
 
@@ -48,16 +47,18 @@ class CookiesManager:
     @staticmethod
     def load_cookies(driver, _rfc):
         """carga las cookies previamente guardadas."""
-        link_sat = SatLinks()
-        link_acessmanager = link_sat.acess_manager
-        driver.get(link_acessmanager) 
+        #link_sat = SatLinks()
+        #link_acessmanager = link_sat.acess_manager
+        #driver.get(link_acessmanager)
         folder_path = os.path.join("AppData", _rfc)
         path_cookies = folder_path+'\\cookies-'+_rfc+'.json'
-        if os.path.exists(folder_path):
+        if os.path.exists(path_cookies):
             with open(path_cookies, 'r', encoding='utf-8') as file:
                 cookies = json.load(file)
+                
             for cookie in cookies:
                 driver.add_cookie(cookie)
+            
             print("-- Cookies cargadas --")
             return True
         else:

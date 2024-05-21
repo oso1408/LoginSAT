@@ -5,6 +5,7 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
+from CE.support_webdriver import DriverConfig
 from CE.fiel_session_manager import SatWebBase
 from CE.verify_cookies import CookiesManager
 from CE.make_an_enquery import PeticionCESelenium
@@ -17,7 +18,8 @@ class SATPortalScraper:
     """Clase scraper portal SAT."""
     def __init__(self):
         self.intentos = 0
-        self.driver = webdriver.Chrome(options="headless")
+        self.driver = webdriver.Firefox(options=DriverConfig().config_headless())
+        #self.driver = webdriver.Chrome()
         self.credentials = "config.json"
         self.cookies_manager = CookiesManager()
         self.link_sat = SatLinks()
@@ -56,6 +58,7 @@ class SATPortalScraper:
         """Funcion login Access Manager """
         inicio = time.time()
         self.intentos = 0
+        self.driver.get(self.link_sat.acess_manager)
         if self.cookies_manager.load_cookies(self.driver, self.rfc):
             if self.cookies_manager.validate_expiration_cookies(self.driver):
                 self._proceed_with_query()
@@ -129,7 +132,6 @@ class SATPortalScraper:
                 return html_data
         except Exception:
             raise ValueError
-
 
 # Uso de la clase
 scraper = SATPortalScraper()
