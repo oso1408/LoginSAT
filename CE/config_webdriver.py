@@ -1,20 +1,28 @@
+import configparser
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.firefox.options import Options
 
 
 class DriverConfig:
-    """Clase para configurar el headless."""
+    """Clase para configurar el headless."""    
     @staticmethod
     def config_headless():
         """Funcion para activar el modo headless de la ventana."""
-        driver_options = Options()
-        driver_options.add_argument('--headless')
-        driver_options.add_argument('--no-sandbox')
-        driver_options.add_argument('--mute-audio')
-        driver_options.add_argument('--disable-dev-shm-usage')
-        driver_options.add_argument('--disable-features=TranslateUI')
-        options = driver_options
-        return options
+        config = configparser.ConfigParser()
+        config.read('config.ini')
+        headless_mode = config.getboolean('settings', 'headless')
+        print("headless mode: ", headless_mode)
+
+        if headless_mode:
+            driver_options = Options()
+            driver_options.add_argument('--headless')
+            driver_options.add_argument('--no-sandbox')
+            options = driver_options
+            return options
+        else:
+            options = ""
+            print("Corriendo con ventana del driver")
+            return options
     
     @staticmethod
     def config_headless_chrome():

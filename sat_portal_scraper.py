@@ -5,7 +5,7 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-#from CE.config_webdriver import DriverConfig
+from CE.config_webdriver import DriverConfig
 from CE.fiel_session_manager import SatWebBase
 from CE.verify_cookies import CookiesManager
 from CE.make_an_enquery import PeticionCESelenium
@@ -18,8 +18,8 @@ class SATPortalScraper:
     """Clase scraper portal SAT."""
     def __init__(self):
         self.intentos = 0
-        #self.driver = webdriver.Firefox(options=DriverConfig().config_headless())
-        self.driver = webdriver.Chrome()
+        self.driver = webdriver.Chrome(options=DriverConfig().config_headless())
+        #self.driver = webdriver.Chrome()
         self.credentials = "config.json"
         self.cookies_manager = CookiesManager()
         self.link_sat = SatLinks()
@@ -73,8 +73,8 @@ class SATPortalScraper:
 
     def _proceed_with_query(self):
         print("Espere un momento, Redirigiendo... \n")
+        self.driver.get(self.link_sat.contabilidad_electronica)
         try:
-            self.driver.get(self.link_sat.contabilidad_electronica)
             WebDriverWait(self.driver,30).until(EC.presence_of_element_located((By.XPATH,self.arguments_id_login.div_c_acuses)))
             html_data = self.query_by()
             cookies_page = self.driver.get_cookies()
