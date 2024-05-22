@@ -76,20 +76,23 @@ class DownloadacknowledgmentsCE:
                 if celda_folio:
                     folio_list.append(celda_folio.get_text())
                     name_file_list.append(celda_name_file.get_text())
-                for folio in folio_list:
-                    indice += 1
-                    download_xml_zip = requests.get(link_download_xml+folio, cookies=read_cookies, timeout=30)
-                    if download_xml_zip.status_code == 200:
-                        with open(self.ruta_save_zip+name_file_list[indice], 'wb') as f:
-                            f.write(download_xml_zip.content)
-                            print("Archivo descargado exitosamente como:", name_file_list[indice])
-                            count_downloaded_files += 1
-                    else:
-                        print("Error al descargar el archivo:", name_file_list[indice])
-                        count_fail_downloaded_files += 1
-                msg_download_successful = "Archivos descargados: "+count_downloaded_files 
-                msg_download_fail = "Archivos no descargados: "+count_fail_downloaded_files
-                return msg_download_successful, msg_download_fail
+            for folio in folio_list:
+                indice += 1
+                download_xml_zip = requests.get(link_download_xml+folio, cookies=read_cookies, timeout=30)
+                if download_xml_zip.status_code == 200:
+                    with open(self.ruta_save_zip+name_file_list[indice], 'wb') as f:
+                        f.write(download_xml_zip.content)
+                        #print("Archivo descargado exitosamente como:", name_file_list[indice])
+                        count_downloaded_files += 1
+                else:
+                    print("Error al descargar el archivo:", name_file_list[indice])
+                    count_fail_downloaded_files += 1
+
+            print("Archivos descargados:", count_downloaded_files)
+            print("Archivos no descargados:", count_fail_downloaded_files)
+            #msg_download_successful = "Archivos descargados: ", count_downloaded_files 
+            #msg_download_fail = "Archivos no descargados: ", count_fail_downloaded_files
+            #return msg_download_successful, msg_download_fail
         else:
-            msg_info = total_registros.text.strip(),'\n',leyenda_table.text.strip()
+            msg_info = total_registros.text.strip()+'\n'+leyenda_table.text.strip()
             return msg_info

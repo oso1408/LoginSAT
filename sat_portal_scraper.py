@@ -79,7 +79,8 @@ class SATPortalScraper:
             html_data = self.query_by()
             cookies_page = self.driver.get_cookies()
             self.download_acuse_cf = DownloadacknowledgmentsCE(html_data, cookies_page, self.output_path)
-            print(self.download_acuse_cf.import_ce())
+            self.download_acuse_cf.import_ce()
+            #print(self.download_acuse_cf.import_ce())
         except Exception as msg_error:
             raise ValueError("Ocurrio un error: ", msg_error)
 
@@ -93,8 +94,8 @@ class SATPortalScraper:
                     CookiesManager().remove_cookies(self.driver, self.rfc)
                     login_fiel = self.sat_web_base.efirma_login()
                     try:
-                        if login_fiel !='':
-                            CookiesManager().save_cookies(self.driver, login_fiel)
+                        if login_fiel:
+                            CookiesManager().save_cookies(self.driver, self.rfc)
                             print("Cookies actualizadas")
                             self._proceed_with_query()
                         else:
@@ -109,19 +110,20 @@ class SATPortalScraper:
                     print("Intentos agotados, el portal del sat no se cargo correctamente \n")
 
     def _login_and_proceed(self):
+        self.driver.get(self.link_sat.acess_manager)
         try:
-            self.driver.get(self.link_sat.acess_manager)
-            WebDriverWait(self.driver, 30).until(EC.presence_of_element_located((By.ID,self.arguments_id_login.btn_fiel))).click()
+            WebDriverWait(self.driver, 40).until(EC.presence_of_element_located((By.ID,self.arguments_id_login.btn_fiel))).click()
             print("Espere un momento, Redirigiendo al formulario\n")
             login_fiel = self.sat_web_base.efirma_login()
-            if login_fiel !='':
-                CookiesManager().save_cookies(self.driver, login_fiel)
+            if login_fiel:
+                CookiesManager().save_cookies(self.driver, self.rfc)
                 print("se actualizaron las cookies")
                 self._proceed_with_query()
             else:
                 print("ocurrio un error")
-        except ValueError as ex:
+        except Exception as ex:
             print("Ocurio un Error: ", ex)
+            #raise ValueError("Ocurio un Error: ", ex)
 
     def query_by(self):
         try:

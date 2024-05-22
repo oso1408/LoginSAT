@@ -16,6 +16,7 @@ class CookiesManager:
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
         cookies = driver.get_cookies()
+        
         file_path = os.path.join(folder_path, 'cookies-'+_rfc+'.json')
         with open(file_path, 'w', encoding='utf-8') as file:
             json.dump(cookies, file)
